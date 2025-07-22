@@ -23,10 +23,13 @@ const ClubCard = ({ club, onJoin, isJoined }) => {
       {isJoined ? (
         <span className="joined-label">✓ Joined</span>
       ) : (
-        <button onClick={(e) => {
-          e.stopPropagation(); // prevent card click from firing
-          onJoin();
-        }} className="join-btn">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onJoin();
+          }}
+          className="join-btn"
+        >
           Join Club
         </button>
       )}

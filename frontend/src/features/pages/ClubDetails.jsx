@@ -18,12 +18,36 @@ function ClubDetails() {
   const { id } = useParams();
   const [club, setClub] = useState(null);
   const [posts, setPosts] = useState([]);
+  const [likes, setLikes] = useState({});
+  const [comments, setComments] = useState({});
+  const [following, setFollowing] = useState({});
 
   useEffect(() => {
-    const foundClub = mockClubs.find(c => c.id === parseInt(id));
-    setClub(foundClub);
-    setPosts(mockPosts.filter(p => p.clubId === parseInt(id)));
+    const clubId = parseInt(id);
+    setClub(mockClubs.find(c => c.id === clubId));
+    setPosts(mockPosts.filter(p => p.clubId === clubId));
   }, [id]);
+
+  const toggleLike = (postId) => {
+    setLikes(prev => ({
+      ...prev,
+      [postId]: prev[postId] ? prev[postId] + 1 : 1
+    }));
+  };
+
+  const addComment = (postId, text) => {
+    setComments(prev => ({
+      ...prev,
+      [postId]: [...(prev[postId] || []), text]
+    }));
+  };
+
+  const toggleFollow = (author) => {
+    setFollowing(prev => ({
+      ...prev,
+      [author]: !prev[author]
+    }));
+  };
 
   if (!club) return <p className="center-text">Club not found.</p>;
 
@@ -42,11 +66,42 @@ function ClubDetails() {
         <div className="feed-list">
           {posts.map(post => (
             <div key={post.id} className="post-card">
-              <h2>{post.movieTitle}</h2>
+              <h2 className="text-lg font-semibold">{post.movieTitle}</h2>
               <p>{post.content}</p>
-              <div className="post-meta">
+              <div className="post-meta text-sm text-gray-400 flex justify-between items-center">
                 <span>By @{post.author}</span>
                 <span>{post.date}</span>
+              </div>
+
+              <div className="mt-2 flex gap-3 items-center text-sm">
+                <button onClick={() => toggleLike(post.id)} className="text-blue-400 hover:underline">
+                  ❤️ Like ({likes[post.id] || 0})
+                </button>
+
+                <button onClick={() => toggleFollow(post.author)} className="text-purple-400 hover:underline">
+                  {following[post.author] ? 'Unfollow' : 'Follow'} @{post.author}
+                </button>
+              </div>
+
+              <div className="mt-4">
+                <h4 className="font-semibold mb-1">💬 Comments:</h4>
+                <ul className="text-sm text-gray-300 mb-2">
+                  {(comments[post.id] || []).map((cmt, i) => (
+                    <li key={i} className="mb-1">- {cmt}</li>
+                  ))}
+                </ul>
+
+                <input
+                  type="text"
+                  placeholder="Add a comment..."
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && e.target.value.trim() !== '') {
+                      addComment(post.id, e.target.value.trim());
+                      e.target.value = '';
+                    }
+                  }}
+                  className="bg-gray-800 px-2 py-1 rounded w-full text-white"
+                />
               </div>
             </div>
           ))}

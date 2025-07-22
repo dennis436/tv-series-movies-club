@@ -20,7 +20,6 @@ const mockClubs = [
 const ClubPage = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-
   const [joinedClubs, setJoinedClubs] = useState([]);
 
   const handleJoin = (club) => {
@@ -38,32 +37,30 @@ const ClubPage = () => {
   };
 
   useEffect(() => {
-  if (isAuthenticated) {
-    const pendingClubId = sessionStorage.getItem('pendingJoinClubId');
-    if (pendingClubId) {
-      const club = mockClubs.find(c => c.id === Number(pendingClubId));
-      if (club) {
-        setJoinedClubs(prevClubs => {
-          if (!prevClubs.find(c => c.id === club.id)) {
-            alert(`You have joined the ${club.name} club!`);
-            return [...prevClubs, club];
-          }
-          return prevClubs;
-        });
+    if (isAuthenticated) {
+      const pendingClubId = sessionStorage.getItem('pendingJoinClubId');
+      if (pendingClubId) {
+        const club = mockClubs.find(c => c.id === Number(pendingClubId));
+        if (club) {
+          setJoinedClubs(prevClubs => {
+            if (!prevClubs.find(c => c.id === club.id)) {
+              alert(`You have joined the ${club.name} club!`);
+              return [...prevClubs, club];
+            }
+            return prevClubs;
+          });
+        }
+        sessionStorage.removeItem('pendingJoinClubId');
       }
-      sessionStorage.removeItem('pendingJoinClubId');
     }
-  }
-}, [isAuthenticated]); // ✅ now joinedClubs is NOT needed in deps
+  }, [isAuthenticated]);
 
-
-  // Filter out clubs the user already joined
   const availableClubs = mockClubs.filter(club => !joinedClubs.some(j => j.id === club.id));
 
   return (
     <div className="club-page">
       <div className="feed-welcome-box">
-        <h1 className="text-xl font-bold mb-2">🎬 Join a Club</h1>
+        <h1 className="text-xl font-bold mb-2">🎮 Join a Club</h1>
         <p className="text-gray-300">Find a community that shares your taste in TV shows and movies!</p>
       </div>
 
