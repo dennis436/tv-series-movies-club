@@ -37,4 +37,4 @@ describe('MoviePost Component', () => {
       expect(screen.getByText(/Great movie!/i)).toBeInTheDocument();
     });
   });
-});gi
+});

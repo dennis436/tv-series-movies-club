@@ -12,25 +12,36 @@ const Login = () => {
   const navigate = useNavigate();
   const { isLoading, error, isAuthenticated } = useSelector((state) => state.auth);
 
+  console.log("Login Component Rendered."); 
+  console.log("Login State - isAuthenticated:", isAuthenticated); 
+  console.log("Login State - isLoading:", isLoading); 
+  console.log("Login State - error:", error); 
+
   useEffect(() => {
+    console.log("Login useEffect [isAuthenticated, navigate] triggered."); 
     if (isAuthenticated) {
       const redirectPath = sessionStorage.getItem('redirectAfterLogin') || '/feed';
       sessionStorage.removeItem('redirectAfterLogin');
+      console.log("Login: Authenticated, navigating to:", redirectPath); 
       navigate(redirectPath);
     }
   }, [isAuthenticated, navigate]);
 
   useEffect(() => {
+    console.log("Login useEffect [dispatch, formData] triggered, clearing error."); 
     dispatch(clearError());
   }, [dispatch, formData]);
 
   const handleChange = (e) => {
+    console.log("Login: handleChange - Name:", e.target.name, "Value:", e.target.value); 
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Crucial: Prevents default form submission
+    console.log("Login: handleSubmit called."); 
     dispatch(clearError());
+    console.log("Login.jsx: Dispatching loginUser with:", formData.username);
     dispatch(loginUser({
       username: formData.username,
       password: formData.password,

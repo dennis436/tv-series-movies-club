@@ -1,5 +1,5 @@
-// src/App.js
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Navbar from './components/Navbar';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './features/pages/Login';
@@ -12,9 +12,26 @@ import Dashboard from './features/pages/Dashboard';
 import PrivateRoute from './components/PrivateRoute';
 import ClubDetails from './features/pages/ClubDetails';
 import CreatePostInClub from './features/pages/CreatePostInClub';
-import EditProfile from './features/pages/EditProfile'; // ✅ import the new component
+import EditProfile from './features/pages/EditProfile';
+import { checkSession } from './features/auth/authSlice'; // Import checkSession
 
 function App() {
+  const dispatch = useDispatch();
+  const { isLoading: authLoading } = useSelector((state) => state.auth);
+
+  // Dispatch checkSession on initial component mount
+  useEffect(() => {
+    dispatch(checkSession());
+  }, [dispatch]);
+
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
+        <p>Loading application...</p>
+      </div>
+    );
+  }
+
   return (
     <>
       <Navbar />
@@ -23,9 +40,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/feed" element={<Feed />} />
-        <Route path="/club" element={<ClubPage />} />
+        <Route path="/clubs" element={<ClubPage />} /> {/* Corrected path from /club to /clubs */}
 
-        {/* ✅ New Club Routes */}
         <Route
           path="/clubs/:id"
           element={
@@ -43,7 +59,6 @@ function App() {
           }
         />
 
-        {/* ✅ Protected Routes */}
         <Route
           path="/tracker"
           element={

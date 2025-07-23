@@ -1,4 +1,3 @@
-// frontend/src/features/auth/authSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 const API_URL = 'http://127.0.0.1:5000';
@@ -7,7 +6,7 @@ export const registerUser = createAsyncThunk(
   'auth/registerUser',
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${API_URL}/register`, {
+      const response = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
@@ -19,7 +18,6 @@ export const registerUser = createAsyncThunk(
         return rejectWithValue(data.message || 'Registration failed');
       }
 
-      // ❌ Don't save token or update auth state here
       return data;
     } catch (error) {
       return rejectWithValue(error.message || 'Network error during registration');
@@ -31,13 +29,19 @@ export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${API_URL}/login`, {
+      console.log("loginUser Thunk: Attempting to log in."); 
+      console.log("loginUser Thunk: User data:", userData); 
+      console.log("loginUser Thunk: API URL:", `${API_URL}/auth/login`);
+
+      const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
       });
 
       const data = await response.json();
+      console.log("loginUser Thunk: Response data:", data); 
+      console.log("loginUser Thunk: Response OK:", response.ok); 
 
       if (!response.ok) {
         return rejectWithValue(data.message || 'Login failed');
@@ -47,8 +51,9 @@ export const loginUser = createAsyncThunk(
         localStorage.setItem('access_token', data.access_token);
       }
 
-      return data;
+      return { ...data, id: data.user_id }; 
     } catch (error) {
+      console.error("loginUser Thunk: Catch block error:", error); 
       return rejectWithValue(error.message || 'Network error during login');
     }
   }
@@ -61,7 +66,7 @@ export const checkSession = createAsyncThunk(
       const token = localStorage.getItem('access_token');
       if (!token) return rejectWithValue('No token found');
 
-      const response = await fetch(`${API_URL}/check_session`, {
+      const response = await fetch(`${API_URL}/auth/check_session`, {
         method: 'GET',
         headers: { 'Authorization': `Bearer ${token}` },
       });
@@ -73,7 +78,7 @@ export const checkSession = createAsyncThunk(
         return rejectWithValue(data.message || 'Session invalid');
       }
 
-      return data;
+      return { ...data, id: data.user_id }; 
     } catch (error) {
       localStorage.removeItem('access_token');
       return rejectWithValue(error.message || 'Network error during session check');
@@ -104,28 +109,25 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // === REGISTER ===
       .addCase(registerUser.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
       .addCase(registerUser.fulfilled, (state) => {
         state.isLoading = false;
-        // ⛔ Don't set user or isAuthenticated here
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
       })
 
-      // === LOGIN ===
       .addCase(loginUser.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload;
+        state.user = action.payload; 
         state.token = action.payload.access_token;
         state.isAuthenticated = true;
       })
@@ -137,14 +139,13 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
       })
 
-      // === CHECK SESSION ===
       .addCase(checkSession.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
       .addCase(checkSession.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload;
+        state.user = action.payload; 
         state.token = localStorage.getItem('access_token');
         state.isAuthenticated = true;
       })
