@@ -421,6 +421,435 @@ input, textarea {
 .my-clubs-section {
   margin-top: 4rem;
 }
+/* === GLOBAL === */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #000;
+  color: #fff;
+  box-sizing: border-box;
+}
+
+/* === NAVBAR === */
+.navbar {
+  background-color: #1a2a44;
+  padding: 16px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.logo {
+  font-size: 24px;
+  color: #ff5733; /* Orange color for logo */
+  font-weight: bold;
+}
+
+.navbar ul {
+  list-style: none;
+  display: flex;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar li {
+  padding: 0.5rem 1rem;
+}
+
+.navbar a,
+.navbar button {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+  text-decoration: none; /* No underline */
+  padding: 8px 12px;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+}
+
+.navbar a:hover,
+.navbar button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #00bfff;
+}
+
+/* Call to action button */
+.join-btn {
+  background-color: #ff4500;
+  color: #fff;
+  font-weight: bold;
+  padding: 8px 14px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.join-btn:hover {
+  background-color: #e03e00;
+}
+
+/* === FORM PAGES === */
+.form-page {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.form-container {
+  background: #1a2a44;
+  padding: 32px;
+  border-radius: 8px;
+  width: 320px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-container h2 {
+  margin-bottom: 16px;
+  text-align: center;
+  color: #ff5733;
+}
+
+.form-container label {
+  font-size: 14px;
+  color: #ccc;
+}
+
+.form-container input {
+  padding: 8px;
+  border: 1px solid #333;
+  border-radius: 4px;
+  background-color: #2c3e50;
+  color: #fff;
+}
+
+.form-container button {
+  margin-top: 16px;
+  padding: 10px;
+  background-color: #ff4500;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.form-container button:disabled {
+  background-color: #666;
+  cursor: default;
+}
+
+.error {
+  color: #ff3333;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* === PAGE CONTAINERS === */
+.page-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 16px;
+}
+
+.page-container h1 {
+  font-size: 32px;
+  margin-bottom: 8px;
+  color: #ff5733;
+}
+
+.page-container p {
+  font-size: 16px;
+  color: #bbb;
+}
+.watchlist-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+  text-align: center;
+}
+
+.watchlist-content {
+  background: #1a2a44;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.login-link {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 10px 20px;
+  background-color: #ff4500;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 6px;
+  text-decoration: none;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.login-link:hover {
+  background-color: #e03e00;
+  border-color: #fff;
+}
+
+.feed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 32px;
+}
+
+.post-card {
+  display: flex;
+  background-color: #1a2a44;
+  border: 1px solid #333;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
+  padding:20px;
+  margin-bottom:30px;
+}
+
+.poster-img {
+  width: 150px;
+  object-fit: cover;
+}
+
+.post-content {
+  padding: 16px;
+  flex: 1;
+}
+
+.genre-badge {
+  background-color: #444;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-left: 8px;
+  color: #fff;
+}
+
+.post-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.post-btn {
+  background-color: transparent;
+  color: #ff5733;
+  border: 1px solid #ff5733;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.post-btn:hover {
+  background-color: #ff5733;
+  color: white;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 60px;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #444;
+  background: #2c3e50;
+  color: white;
+}
+
+input, textarea {
+  margin-top: 6px;
+}
+.feed-welcome-box {
+  background-color: #1a2a44;
+  padding: 40px;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 40px;
+  max-width: 800px;
+  margin: 40px auto;
+}
+
+.feed-welcome-box h1 {
+  font-size: 2.5rem; /* Increased from default ~2rem */
+  margin-bottom: 12px;
+  color: #ff5733;
+}
+
+.feed-welcome-box p {
+  font-size: 1.2rem;
+  color: #ccc;
+  margin-bottom: 20px;
+}
+
+.feed-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.feed-buttons a {
+  text-decoration: none;
+}
+
+.feed-buttons a {
+  text-decoration: none !important; /* Forces no underline */
+}
+
+
+.login-btn-box {
+  border: 2px solid #ff5733;
+  padding: 8px 16px;
+  border-radius: 4px;
+  color: #ff5733;
+  background: none;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s ease;
+}
+
+.login-btn-box:hover {
+  background-color: #ff5733;
+  color: #fff;
+}
+
+
+.post-card {
+  background-color: #1a2a44;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.post-card h2 {
+  font-size: 22px;
+  margin-bottom: 8px;
+  color: #ff5733;
+}
+
+.post-card p {
+  color: #ddd;
+  line-height: 1.5;
+  margin-bottom:15px;
+}
+
+.post-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #bbb;
+  margin-top: 12px;
+}
+/* Centered container for protected route fallback */
+.protected-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 70vh;
+  background-color: #000; /* match full page bg */
+}
+
+/* Box styling similar to .feed-welcome-box */
+.protected-box {
+  background-color:  #1a2a44; /* deep navy like feed */
+  border-radius: 10px;
+  padding: 3rem;
+  text-align: center;
+  max-width: 500px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+/* Text inside the box */
+.protected-box h2 {
+  color: #ff5733;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+/* Login button styled like feed buttons */
+.protected-box .login-btn {
+  display: inline-block;
+  background: linear-gradient(to right, #ff416c, #ff4b2b);
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 5px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+.protected-box .login-btn:hover {
+  background: linear-gradient(to right, #ff4b2b, #ff416c);
+}
+/* ===== CLUB PAGE STYLES ===== */
+.club-page {
+  padding: 2rem;
+}
+
+.club-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.club-card {
+  background-color: #1f2937;
+  border: 1px solid #374151;
+  padding: 1.5rem;
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  color: #f3f4f6;
+}
+
+.club-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.club-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #e5e7eb;
+}
+
+.club-desc {
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  color: #cbd5e1;
+}
+
+.join-btn {
+  background-color: #4f46e5;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.join-btn:hover {
+  background-color: #4338ca;
+}
+/* ==== MY CLUBS ==== */
+.my-clubs-section {
+  margin-top: 4rem;
+}
 
 .joined-label {
   display: inline-block;
@@ -474,3 +903,300 @@ a.join-btn:visited {
 a.join-btn:hover {
   text-decoration: none;
 }
+
+/* === CLUBDETAILS SECTION STYLING ====*/
+.page-container{
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  color:#f0f0f0;
+  font-family: Arial, sans-serief;
+  background-color: #121212;
+}
+
+.club-name {
+  font-size: 2rem;
+  margin-bottom: 5px;
+}
+
+.club-desc{
+  color: #bbb;
+  margin-bottom: 20px;
+}
+
+.text-right {
+  text-align: right;
+  margin-bottom: 20px;
+}
+
+.create-btn{
+  background-attachment: #28a745;
+  color:white;
+  padding: 8px 16px;
+  text-decoration:none;
+  border-radius: 5px;
+  font-weight:bold;
+}
+
+.create-btn:hover {
+  background-color: #218838;
+}
+
+.no-post-text,
+.center-text{
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  margin-top: 40px;
+}
+
+.feed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.post-card {
+  background-color: #1e1e1e;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 0 6px rgba(255,255,255,0.05);
+}
+
+.post-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.post-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #888;
+  margin-bottom: 12px;
+}
+
+.post-actions{
+  display: flex;
+  gap:15px;
+  margin-bottom: 15px;
+}
+
+
+.like_btn,
+.follow-btn {
+  background: none;
+  border: none;
+  color: #61dafb;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.like-btn:hover,
+.follow-btn:hover{
+  text-decoration: underline;
+}
+
+.comments-section h4 {
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.comment-list  {
+  margin-bottom: 10px;
+  list-style-type: none;
+  padding-left: 0;
+  color: #ccc;
+}
+
+.comment-list li {
+  margin-bottom: 5px;
+}
+
+.comment-input {
+  width: 100%;
+  padding: 8px;
+  background-color: #2c2c2c;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 4px;
+}
+
+
+.joined-label {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: #22c55e; /* green */
+  color: white;
+  font-weight: bold;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.club-card.joined {
+  border: 2px solid #22c55e;
+  background-color: #1e3a2f;
+}
+/* === DASHBOARD SECTION STYLING === */
+.dashboard-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 16px;
+}
+
+.user-info-box {
+  background-color: #1f2937;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #374151;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  margin-top: 16px;
+}
+
+.section {
+  margin-top: 50px;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ff5733;
+  margin-bottom: 1rem;
+}
+.club-card.joined .join-btn {
+  text-decoration: none !important;
+}
+/* === Edit Profile Link === */
+a.join-btn,
+a.join-btn:visited {
+  text-decoration: none;
+}
+
+a.join-btn:hover {
+  text-decoration: none;
+}
+
+/* === CLUBDETAILS SECTION STYLING ====*/
+.page-container{
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  color:#f0f0f0;
+  font-family: Arial, sans-serief;
+  background-color: #121212;
+}
+
+.club-name {
+  font-size: 2rem;
+  margin-bottom: 5px;
+}
+
+.club-desc{
+  color: #bbb;
+  margin-bottom: 20px;
+}
+
+.text-right {
+  text-align: right;
+  margin-bottom: 20px;
+}
+
+.create-btn{
+  background-attachment: #28a745;
+  color:white;
+  padding: 8px 16px;
+  text-decoration:none;
+  border-radius: 5px;
+  font-weight:bold;
+}
+
+.create-btn:hover {
+  background-color: #218838;
+}
+
+.no-post-text,
+.center-text{
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  margin-top: 40px;
+}
+
+.feed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.post-card {
+  background-color: #1e1e1e;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 0 6px rgba(255,255,255,0.05);
+}
+
+.post-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.post-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #888;
+  margin-bottom: 12px;
+}
+
+.post-actions{
+  display: flex;
+  gap:15px;
+  margin-bottom: 15px;
+}
+
+
+.like_btn,
+.follow-btn {
+  background: none;
+  border: none;
+  color: #61dafb;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.like-btn:hover,
+.follow-btn:hover{
+  text-decoration: underline;
+}
+
+.comments-section h4 {
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.comment-list  {
+  margin-bottom: 10px;
+  list-style-type: none;
+  padding-left: 0;
+  color: #ccc;
+}
+
+.comment-list li {
+  margin-bottom: 5px;
+}
+
+.comment-input {
+  width: 100%;
+  padding: 8px;
+  background-color: #2c2c2c;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 4px;
+}
+
+
+
+
+

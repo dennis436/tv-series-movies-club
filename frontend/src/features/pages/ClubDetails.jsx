@@ -10,32 +10,42 @@ import {
 // PostCard component to display individual posts (updated to include interactive elements)
 const PostCard = ({ post, toggleLike, addComment, toggleFollow, likes, comments, following }) => {
   return (
-    <div className="post-card bg-gray-800 rounded-lg p-4 shadow-md mb-4">
-      <h2 className="text-xl font-bold text-blue-400 mb-2">{post.movie_title}</h2>
+    <div className="forum-post-card">
+      <h2 className="text-xl font-bold text-blue-400 mb-2">
+        {post.movie_title}
+      </h2>
       <p className="text-gray-300 mb-3">{post.content}</p>
       <div className="post-meta text-sm text-gray-400 flex justify-between items-center">
         {/* Use author_username from backend and created_at_formatted */}
-        <span>By @{post.author_username || 'Unknown'}</span> 
-        <span>{new Date(post.created_at_formatted).toLocaleDateString()}</span> 
+        <span>By @{post.author_username || "Unknown"}</span>
+        <span>{new Date(post.created_at_formatted).toLocaleDateString()}</span>
       </div>
 
-      
       <div className="mt-2 flex gap-3 items-center text-sm">
-        <button onClick={() => toggleLike(post.id)} className="text-blue-400 hover:underline">
+        <button
+          onClick={() => toggleLike(post.id)}
+          className="text-blue-400 hover:underline"
+        >
           Like ({likes[post.id] || 0}) {/* Removed emoji */}
         </button>
 
         {/* Use post.author_username for following logic */}
-        <button onClick={() => toggleFollow(post.author_username)} className="text-purple-400 hover:underline">
-          {following[post.author_username] ? 'Unfollow' : 'Follow'} @{post.author_username}
+        <button
+          onClick={() => toggleFollow(post.author_username)}
+          className="text-purple-400 hover:underline"
+        >
+          {following[post.author_username] ? "Unfollow" : "Follow"} @
+          {post.author_username}
         </button>
       </div>
 
       <div className="mt-4">
-        <h4 className="font-semibold mb-1">Comments:</h4> 
+        <h4 className="font-semibold mb-1">Comments:</h4>
         <ul className="text-sm text-gray-300 mb-2">
           {(comments[post.id] || []).map((cmt, i) => (
-            <li key={i} className="mb-1">- {cmt}</li>
+            <li key={i} className="mb-1">
+              - {cmt}
+            </li>
           ))}
         </ul>
 
@@ -43,9 +53,9 @@ const PostCard = ({ post, toggleLike, addComment, toggleFollow, likes, comments,
           type="text"
           placeholder="Add a comment..."
           onKeyDown={(e) => {
-            if (e.key === 'Enter' && e.target.value.trim() !== '') {
+            if (e.key === "Enter" && e.target.value.trim() !== "") {
               addComment(post.id, e.target.value.trim());
-              e.target.value = '';
+              e.target.value = "";
             }
           }}
           className="bg-gray-800 px-2 py-1 rounded w-full text-white"
