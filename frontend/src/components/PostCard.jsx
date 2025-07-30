@@ -3,42 +3,49 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { followUser, unfollowUser, fetchFollowing } from '../features/auth/authSlice';
 import { deletePost, toggleLike, addComment, deleteComment } from '../features/clubs/clubSlice';
+import { addToWatchlist } from '../features/Watchlist/watchlistSlice'; // ✅ NEW
 
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
   const { user: currentUser, following: followingListFromRedux, isAuthenticated } = useSelector((state) => state.auth);
 
-  // Determine if the current user has liked this post
-  // This will now correctly reflect changes because the 'likes' array in Redux is updated
   const hasLiked = post.likes && currentUser ? post.likes.some(like => like.user_id === currentUser.id) : false;
 
   const [commentsVisible, setCommentsVisible] = useState(false);
   const [newCommentContent, setNewCommentContent] = useState('');
 
-  // Ensure followingListFromRedux is an array before using .some()
   const isFollowing = (followingListFromRedux || []).some(followedUser => followedUser.id === post.author_id);
   const isOwnPost = currentUser && currentUser.id === post.author_id;
 
-  // Fetch following list when currentUser changes
   useEffect(() => {
     if (currentUser?.id) {
       dispatch(fetchFollowing(currentUser.id));
     }
   }, [currentUser?.id, dispatch]);
 
-  // Handle Like/Unlike action
   const handleToggleLike = async () => {
     if (!isAuthenticated) {
       alert("Please log in to like posts.");
       return;
     }
     try {
-      // Pass currentUserId to the thunk
       await dispatch(toggleLike({ postId: post.id, currentUserId: currentUser.id })).unwrap();
-      console.log(`Successfully toggled like for post ${post.id}`);
+
+      // ✅ If it was not previously liked, add it to watchlist
+      const userPreviouslyLiked = post.likes?.some(like => like.user_id === currentUser.id);
+      if (!userPreviouslyLiked) {
+        dispatch(addToWatchlist({
+          id: post.id,
+          title: post.movie_title,
+          genre: post.genre || 'Unknown',
+          status: 'liked',
+        }));
+      }
+
+      console.log(Successfully toggled like for post ${post.id});
     } catch (error) {
       console.error("Failed to toggle like:", error);
-      alert(`Failed to toggle like: ${error.message || 'An error occurred.'}`);
+      alert(Failed to toggle like: ${error.message || 'An error occurred.'});
     }
   };
 
@@ -60,19 +67,18 @@ const PostCard = ({ post }) => {
     try {
       if (isFollowing) {
         await dispatch(unfollowUser(post.author_id)).unwrap();
-        console.log(`Successfully unfollowed user ${post.author_id}`);
+        console.log(Successfully unfollowed user ${post.author_id});
       } else {
         await dispatch(followUser(post.author_id)).unwrap();
-        console.log(`Successfully followed user ${post.author_id}`);
+        console.log(Successfully followed user ${post.author_id});
       }
     } catch (error) {
       console.error("Failed to toggle follow:", error);
-      alert(`Failed to toggle follow: ${error.message || 'An error occurred.'}`);
+      alert(Failed to toggle follow: ${error.message || 'An error occurred.'});
     }
   };
 
   const handleDeletePost = async () => {
-    // Replaced window.confirm with a simple alert for now as per instructions to avoid window.confirm
     if (!window.confirm("Are you sure you want to delete this post? This action cannot be undone.")) {
       return;
     }
@@ -80,10 +86,10 @@ const PostCard = ({ post }) => {
     try {
       await dispatch(deletePost(post.id)).unwrap();
       alert("Post deleted successfully!");
-      console.log(`Post ${post.id} deleted successfully.`);
+      console.log(Post ${post.id} deleted successfully.);
     } catch (error) {
       console.error("Failed to delete post:", error);
-      alert(`Failed to delete post: ${error.message || 'An error occurred.'}`);
+      alert(Failed to delete post: ${error.message || 'An error occurred.'});
     }
   };
 
@@ -96,11 +102,11 @@ const PostCard = ({ post }) => {
     if (newCommentContent.trim()) {
       try {
         await dispatch(addComment({ postId: post.id, content: newCommentContent.trim() })).unwrap();
-        setNewCommentContent(''); // Clear input on success
-        console.log(`Comment added to post ${post.id}`);
+        setNewCommentContent('');
+        console.log(Comment added to post ${post.id});
       } catch (error) {
         console.error("Failed to add comment:", error);
-        alert(`Failed to add comment: ${error.message || 'An error occurred.'}`);
+        alert(Failed to add comment: ${error.message || 'An error occurred.'});
       }
     }
   };
@@ -110,16 +116,15 @@ const PostCard = ({ post }) => {
       alert("Please log in to delete comments.");
       return;
     }
-    // Replaced window.confirm with a simple alert for now as per instructions to avoid window.confirm
     if (!window.confirm("Are you sure you want to delete this comment?")) {
       return;
     }
     try {
       await dispatch(deleteComment(commentId)).unwrap();
-      console.log(`Comment ${commentId} deleted successfully.`);
+      console.log(Comment ${commentId} deleted successfully.);
     } catch (error) {
       console.error("Failed to delete comment:", error);
-      alert(`Failed to delete comment: ${error.message || 'An error occurred.'}`);
+      alert(Failed to delete comment: ${error.message || 'An error occurred.'});
     }
   };
 
@@ -136,7 +141,6 @@ const PostCard = ({ post }) => {
         <span>{post.created_at ? new Date(post.created_at).toLocaleDateString() : 'Invalid Date'}</span>
       </div>
 
-      {/* Buttons - Improved Grid Layout and Styling */}
       <div className="post-actions grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mb-4">
         <button
           onClick={handleToggleLike}
@@ -152,12 +156,7 @@ const PostCard = ({ post }) => {
 
         <button
           onClick={handleFollow}
-          className="
-            px-4 py-2 rounded-full bg-purple-600 text-white font-bold
-            hover:bg-purple-700 transition duration-300 ease-in-out
-            transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-75
-            shadow-md
-          "
+          className="px-4 py-2 rounded-full bg-purple-600 text-white font-bold hover:bg-purple-700 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-75 shadow-md"
           disabled={isOwnPost || !isAuthenticated}
         >
           {isOwnPost ? 'Your Post' : (isFollowing ? 'Unfollow' : 'Follow')}
@@ -165,32 +164,21 @@ const PostCard = ({ post }) => {
 
         <button
           onClick={() => setCommentsVisible(prev => !prev)}
-          className="
-            px-4 py-2 rounded-full bg-gray-600 text-white font-bold
-            hover:bg-gray-700 transition duration-300 ease-in-out
-            transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-75
-            shadow-md
-          "
+          className="px-4 py-2 rounded-full bg-gray-600 text-white font-bold hover:bg-gray-700 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-75 shadow-md"
         >
-          {commentsVisible ? 'Hide Comments' : `Show Comments (${post.comments ? post.comments.length : 0})`}
+          {commentsVisible ? 'Hide Comments' : Show Comments (${post.comments ? post.comments.length : 0})}
         </button>
 
         {isAuthenticated && isOwnPost && (
           <button
             onClick={handleDeletePost}
-            className="
-              px-4 py-2 rounded-full bg-red-600 text-white font-bold
-              hover:bg-red-700 transition duration-300 ease-in-out
-              transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75
-              shadow-md
-            "
+            className="px-4 py-2 rounded-full bg-red-600 text-white font-bold hover:bg-red-700 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75 shadow-md"
           >
             Delete Post
           </button>
         )}
       </div>
 
-      {/* Comments Section */}
       {commentsVisible && (
         <div className="comments-section mt-3">
           <h4 className="text-[#ff5733] font-medium mb-2">Comments</h4>
@@ -200,18 +188,12 @@ const PostCard = ({ post }) => {
           ) : (
             <ul className="space-y-2 mb-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
               {post.comments && post.comments.map((comment) => (
-                <li key={comment.id} className="
-                  text-sm text-gray-200 flex justify-between items-start p-2 rounded-md bg-[#2c3e50] border border-gray-600
-                  flex-col sm:flex-row sm:items-center
-                ">
+                <li key={comment.id} className="text-sm text-gray-200 flex justify-between items-start p-2 rounded-md bg-[#2c3e50] border border-gray-600 flex-col sm:flex-row sm:items-center">
                   <span className="flex-grow"><strong>@{comment.username}</strong>: {comment.content}</span>
                   {isAuthenticated && currentUser?.id === comment.user_id && (
                     <button
                       onClick={() => handleDeleteComment(comment.id)}
-                      className="
-                        mt-1 sm:mt-0 sm:ml-4 px-2 py-1 rounded-md bg-red-500 text-white text-xs
-                        hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50
-                      "
+                      className="mt-1 sm:mt-0 sm:ml-4 px-2 py-1 rounded-md bg-red-500 text-white text-xs hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
                     >
                       Delete
                     </button>
@@ -232,12 +214,7 @@ const PostCard = ({ post }) => {
               />
               <button
                 type="submit"
-                className="
-                  w-full sm:w-auto px-4 py-2 rounded-full bg-blue-600 text-white font-bold
-                  hover:bg-blue-700 transition duration-300 ease-in-out
-                  transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75
-                  shadow-md
-                "
+                className="w-full sm:w-auto px-4 py-2 rounded-full bg-blue-600 text-white font-bold hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 shadow-md"
               >
                 Add Comment
               </button>
