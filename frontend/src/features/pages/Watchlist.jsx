@@ -1,9 +1,8 @@
 // src/features/pages/Watchlist.jsx
 
-import React, { useState } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  addToWatchlist,
   removeFromWatchlist,
   toggleWatchedStatus,
 } from "../Watchlist/watchlistSlice.js";
@@ -13,91 +12,44 @@ const Watchlist = () => {
   const dispatch = useDispatch();
   const watchlist = useSelector((state) => state.watchlist.movies);
 
-  // Local state for input form
-  const [title, setTitle] = useState("");
-  const [genre, setGenre] = useState("");
-  const [status, setStatus] = useState("plan"); // plan or watched
-
-  const handleAdd = (e) => {
-    e.preventDefault();
-
-    if (!title.trim()) return;
-
-    const newMovie = {
-      id: Date.now(),
-      title,
-      genre,
-      status,
-    };
-
-    dispatch(addToWatchlist(newMovie));
-
-    // Clear form
-    setTitle("");
-    setGenre("");
-    setStatus("plan");
-  };
-
   return (
     <div className="page-container">
-      <h2 className="watchlist-title">🎬 My Watchlist</h2>
+      <h2 className="watchlist-title">🎬 My Liked Movies</h2>
 
-      <form onSubmit={handleAdd} className="watchlist-form">
-        <input
-          type="text"
-          placeholder="Movie title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="watchlist-input"
-        />
-        <select
-          value={genre}
-          onChange={(e) => setGenre(e.target.value)}
-          className="watchlist-input"
-        >
-          <option value="">Select Genre</option>
-          <option value="Action">Action</option>
-          <option value="Comedy">Comedy</option>
-          <option value="Crime">Crime</option>
-          <option value="Drama">Drama</option>
-          <option value="Fantasy">Fantasy</option>
-          <option value="Horror">Horror</option>
-          <option value="Romance">Romance</option>
-          <option value="Sci-Fi">Sci-Fi</option>
-          <option value="Thriller">Thriller</option>
-        </select>
-        <select
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-          className="watchlist-input"
-        >
-          <option value="plan">Plan to Watch</option>
-          <option value="watched">Watched</option>
-        </select>
-        <button type="submit" className="watchlist-button">
-          ➕ Add Movie
-        </button>
-      </form>
+      {watchlist.length === 0 ? (
+        <p className="text-gray-400 mt-4">You haven’t liked any movies yet.</p>
+      ) : (
+        <ul className="watchlist-list">
+          {watchlist.map((movie) => (
+            <li key={movie.id} className="watchlist-item">
+              <span className="watchlist-title">
+                {movie.title} ({movie.genre})
+              </span>
+              <div className="watchlist-actions">
+                <button
+                  onClick={() => dispatch(toggleWatchedStatus(movie.id))}
+                  className={`watchlist-button ${
+                    movie.status === "watched"
+                      ? "bg-green-600 text-white"
+                      : "bg-blue-600 text-white"
+                  }`}
+                >
+                  {movie.status === "watched"
+                    ? "Watched"
+                    : "Planned to Watch"}
+                </button>
 
-      <ul className="watchlist-list">
-        {watchlist.map((movie) => (
-          
-          <li key={movie.id} className="watchlist-item">
-            <span className="watchlist-title">
-              {movie.title} ({movie.genre}) -{" "}
-              {movie.status === "watched" ? " Watched" : " Plan"}
-            </span>
-            <div className="watchlist-actions">
-              <button onClick={() => dispatch(toggleWatchedStatus(movie.id))}>
-                Toggle
-              </button>
-              <button onClick={() => dispatch(removeFromWatchlist(movie.id))}>
-                 Remove
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
+                <button
+                  onClick={() => dispatch(removeFromWatchlist(movie.id))}
+                  className="watchlist-button bg-red-600 text-white ml-2"
+                >
+                  Remove
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
