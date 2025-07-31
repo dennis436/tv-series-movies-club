@@ -56,7 +56,7 @@ def create_app():
     from .models.movie import Movie
     from .models.post import Post
     from .models.review import Review
-    from .models.watchlist import Watchlist
+    from .models.watchlist import Watchlist # Ensure Watchlist model is imported
     from .models.follow import Follow
     from .models.club_member import ClubMember
     from .models.like import Like
@@ -87,13 +87,12 @@ def create_app():
         return jsonify(message="Welcome to the TV Series & Movies Club API!")
 
     # Register API resources (Flask-RESTful)
-    # NEW: Import ForgotPassword and ResetPassword
     from .routes.auth_routes import UserRegistration, UserLogin, CheckSession, ForgotPassword, ResetPassword
     api.add_resource(UserRegistration, '/auth/register')
     api.add_resource(UserLogin, '/auth/login')
     api.add_resource(CheckSession, '/auth/check_session')
-    api.add_resource(ForgotPassword, '/auth/forgot_password') # NEW: Add ForgotPassword resource
-    api.add_resource(ResetPassword, '/auth/reset_password')   # NEW: Add ResetPassword resource
+    api.add_resource(ForgotPassword, '/auth/forgot_password')
+    api.add_resource(ResetPassword, '/auth/reset_password')
 
     # Register Flask Blueprints
     from .routes.club_routes import club_bp
@@ -111,8 +110,11 @@ def create_app():
     from .routes.like_routes import like_bp
     app.register_blueprint(like_bp, url_prefix='')
 
-    # NEW: Register the comment_bp blueprint
     from .routes.comment_routes import comment_bp
     app.register_blueprint(comment_bp, url_prefix='')
+
+    # NEW: Import and Register the watchlist_bp blueprint
+    from .routes.watchlist_routes import watchlist_bp
+    app.register_blueprint(watchlist_bp, url_prefix='') # Register with empty prefix to match /users/<id>/watchlist
 
     return app

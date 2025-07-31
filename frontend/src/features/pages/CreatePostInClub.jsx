@@ -16,23 +16,18 @@ function CreatePostInClub() {
   const [movieTitle, setMovieTitle] = useState('');
   const [content, setContent] = useState('');
   const [localMessage, setLocalMessage] = useState(null);
-  const [isPostSuccessDisplayed, setIsPostSuccessDisplayed] = useState(false); 
+  const [isPostSuccessDisplayed, setIsPostSuccessDisplayed] = useState(false);
 
   const { postCreationStatus, postCreationError } = useSelector((state) => state.clubs);
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
-  
   useEffect(() => {
     console.log("CreatePostInClub useEffect [postCreationStatus]: Status changed to:", postCreationStatus);
 
     if (postCreationStatus === 'succeeded') {
-      
       dispatch(setPostCreationStatus('idle'));
-
-      
       setIsPostSuccessDisplayed(true);
 
-      
       if (user?.id) {
         console.log("CreatePostInClub useEffect [postCreationStatus]: Dispatching fetchUserPosts to update dashboard.");
         dispatch(fetchUserPosts(user.id));
@@ -47,31 +42,29 @@ function CreatePostInClub() {
       }, 5000);
       return () => clearTimeout(timer);
     }
-  }, [postCreationStatus, postCreationError, dispatch, user?.id]); 
+  }, [postCreationStatus, postCreationError, dispatch, user?.id]);
 
-  
   useEffect(() => {
     if (isPostSuccessDisplayed) {
       console.log("CreatePostInClub useEffect [isPostSuccessDisplayed]: Post success detected. Displaying message and setting navigation timer.");
-      setLocalMessage('Post created successfully!'); 
+      setLocalMessage('Post created successfully!');
 
       const timer = setTimeout(() => {
         console.log("CreatePostInClub useEffect [isPostSuccessDisplayed]: Inside setTimeout - preparing to navigate.");
-        setLocalMessage(null); 
-        setIsPostSuccessDisplayed(false); 
+        setLocalMessage(null);
+        setIsPostSuccessDisplayed(false);
         console.log(`CreatePostInClub useEffect [isPostSuccessDisplayed]: Navigating to /clubs/${id}`);
-        navigate(`/clubs/${id}`); 
+        navigate(`/clubs/${id}`);
         console.log("CreatePostInClub useEffect [isPostSuccessDisplayed]: Navigation call executed.");
-      }, 1500); 
+      }, 1500);
 
       return () => {
         console.log("CreatePostInClub useEffect [isPostSuccessDisplayed]: Cleaning up setTimeout.");
-        clearTimeout(timer); 
+        clearTimeout(timer);
       };
     }
-  }, [isPostSuccessDisplayed, id, navigate]); 
+  }, [isPostSuccessDisplayed, id, navigate]);
 
-  
   useEffect(() => {
     if (!isAuthenticated) {
       console.log("CreatePostInClub useEffect [isAuthenticated]: Not authenticated, redirecting to login.");
@@ -82,8 +75,8 @@ function CreatePostInClub() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLocalMessage(null); 
-    setIsPostSuccessDisplayed(false); 
+    setLocalMessage(null);
+    setIsPostSuccessDisplayed(false);
 
     if (!movieTitle || !content) {
       setLocalMessage('Please fill in both movie title and your thoughts.');
@@ -107,7 +100,6 @@ function CreatePostInClub() {
       >
         <h2 className="text-2xl font-bold text-orange-400 mb-6 text-center">Create Post in Club #{id}</h2>
 
-        {}
         {localMessage && (
           <p className={`text-center mb-4 ${isPostSuccessDisplayed ? 'text-green-500' : 'text-red-500'}`}>
             {localMessage}
@@ -121,7 +113,7 @@ function CreatePostInClub() {
           <input
             type="text"
             id="movieTitle"
-            className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 border-gray-600 focus:border-blue-500"
+            className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline bg-gray-700 border-gray-600 focus:border-blue-500" // Changed text-gray-700 to text-white
             value={movieTitle}
             onChange={(e) => setMovieTitle(e.target.value)}
             required
@@ -135,14 +127,14 @@ function CreatePostInClub() {
           </label>
           <textarea
             id="content"
-            className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 border-gray-600 focus:border-blue-500 h-32 resize-none"
+            className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline bg-gray-700 border-gray-600 focus:border-blue-500 h-32 resize-none" // Changed text-gray-700 to text-white
             value={content}
             onChange={(e) => setContent(e.target.value)}
             required
             disabled={postCreationStatus === 'pending'}
           />
         </div>
-{}
+
         <button
           type="submit"
           className={`

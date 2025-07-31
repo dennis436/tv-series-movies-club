@@ -3,6 +3,7 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../features/auth/authSlice';
+import { resetWatchlistState } from '../features/Watchlist/watchlistSlice'; // Import resetWatchlistState
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -10,8 +11,9 @@ const Navbar = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
 
   const handleLogout = () => {
-    dispatch(logout());
-    navigate('/login');
+    dispatch(logout()); // Dispatch the logout action from authSlice
+    dispatch(resetWatchlistState()); // NEW: Dispatch resetWatchlistState on logout
+    navigate('/login'); // Redirect to login page after logout
   };
 
   return (
@@ -23,7 +25,7 @@ const Navbar = () => {
         )}
         <li><NavLink to="/feed">Feed</NavLink></li>
         <li><NavLink to="/clubs">Clubs</NavLink></li>
-        <li><NavLink to="/watchlist">Watchlist</NavLink></li>
+        <li><NavLink to="/watchlist">Watchlist</NavLink></li> {/* Ensure this link exists */}
 
         {isAuthenticated && (
           <>

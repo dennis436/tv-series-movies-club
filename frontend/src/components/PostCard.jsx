@@ -12,12 +12,12 @@ import {
   fetchFollowing,
   fetchFollowers,
 } from '../features/auth/authSlice';
-import { addToWatchlist } from '../features/Watchlist/watchlistSlice'; 
+import { addToWatchlist, fetchWatchlist } from '../features/Watchlist/watchlistSlice';
 
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
   const { user, isAuthenticated, following } = useSelector((state) => state.auth);
-  const watchlist = useSelector((state) => state.watchlist.movies); 
+  const watchlistItems = useSelector((state) => state.watchlist.items);
 
   const [newComment, setNewComment] = useState('');
   const [showComments, setShowComments] = useState(false);
@@ -26,77 +26,115 @@ const PostCard = ({ post }) => {
   const isAuthor = post.user_id === user?.id;
   const isFollowingAuthor = following?.some((f) => f.id === post.user_id);
 
-  const alreadyInWatchlist = watchlist.some((movie) => movie.id === post.id); 
+  const alreadyInWatchlist = watchlistItems.some((item) => item.movie_id === post.id);
 
   const handleLikeToggle = async () => {
-    if (!user) return console.error('Please log in to like posts.');
+    if (!user) {
+      console.error('Please log in to like posts.');
+      return;
+    }
 
     try {
-      await dispatch(toggleLike({ postId: post.id, currentUserId: user.id })).unwrap();
+      const resultAction = await dispatch(toggleLike({ postId: post.id, currentUserId: user.id })).unwrap();
+      const newLikedStatus = resultAction.liked;
 
-      
-      if (!isLiked && !alreadyInWatchlist) {
-        dispatch(addToWatchlist({
-          id: post.id,
-          title: post.movie_title,
-          genre: post.club?.name || 'Unknown',
-          status: 'planned'
+      if (newLikedStatus && !alreadyInWatchlist) {
+        await dispatch(addToWatchlist({ // Await this dispatch to ensure it completes
+          movie_id: post.id,
+          movie_title: post.movie_title,
+          genre: post.club?.name || null,
+          status: 'pending',
         }));
+        console.log(`Dispatched addToWatchlist for "${post.movie_title}".`);
+
+        // Introduce a small delay before fetching the watchlist
+        // This gives the backend a moment to process the new item fully.
+        setTimeout(() => {
+          if (user?.id) {
+            dispatch(fetchWatchlist(user.id));
+          }
+        }, 300); // 300ms delay (adjust if needed)
+
+      } else if (!newLikedStatus && alreadyInWatchlist) {
+        console.log(`User unliked "${post.movie_title}". Not automatically removing from watchlist.`);
       }
 
-      console.log(`Toggled like for post ${post.id}`);
+      console.log(`Toggled like for post ${post.id}. New status: ${newLikedStatus ? 'Liked' : 'Unliked'}`);
     } catch (error) {
-      console.error('Failed to toggle like:', error);
+      console.error('Failed to toggle like or add to watchlist:', error);
     }
   };
 
   const handleAddComment = async (e) => {
     e.preventDefault();
-    if (!user || !newComment.trim()) return;
-
+    if (!user || !newComment.trim()) {
+      console.error("Comment cannot be empty.");
+      return;
+    }
     try {
       await dispatch(addComment({ postId: post.id, content: newComment })).unwrap();
       setNewComment('');
       setShowComments(true);
+      console.log(`Successfully added comment to post ${post.id}`);
     } catch (error) {
       console.error('Failed to add comment:', error);
     }
   };
 
   const handleDeleteComment = async (commentId) => {
-    if (!user) return;
+    if (!user) {
+      console.error("Please log in to delete comments.");
+      return;
+    }
     try {
       await dispatch(deleteComment(commentId)).unwrap();
+      console.log(`Successfully deleted comment ${commentId}`);
     } catch (error) {
       console.error('Failed to delete comment:', error);
     }
   };
 
   const handleDeletePost = async () => {
-    if (!user || !isAuthor) return;
+    if (!user || !isAuthor) {
+      console.error("You are not authorized to delete this post.");
+      return;
+    }
     try {
       await dispatch(deletePost(post.id)).unwrap();
+      console.log(`Successfully deleted post ${post.id}`);
     } catch (error) {
       console.error('Failed to delete post:', error);
     }
   };
 
   const handleFollowToggle = async () => {
-    if (!user || user.id === post.user_id) return;
+    if (!user) {
+      console.error("Please log in to follow/unfollow users.");
+      return;
+    }
+    if (user.id === post.user_id) {
+      console.log("Cannot follow/unfollow yourself.");
+      return;
+    }
 
     try {
       if (isFollowingAuthor) {
         await dispatch(unfollowUser(post.user_id)).unwrap();
+        console.log(`Successfully unfollowed user ${post.author_username}`);
       } else {
         await dispatch(followUser(post.user_id)).unwrap();
+        console.log(`Successfully followed user ${post.author_username}`);
       }
-
       if (user?.id) {
         dispatch(fetchFollowing(user.id));
         dispatch(fetchFollowers(user.id));
       }
     } catch (error) {
       console.error('Follow toggle error:', error);
+      if (error.message && error.message.includes("Not currently following")) {
+        console.log("Attempting to correct local state for unfollow.");
+        dispatch(unfollowUser.fulfilled(post.user_id));
+      }
     }
   };
 
