@@ -112,7 +112,7 @@ class ForgotPassword(Resource):
             # --- Email Sending Logic ---
             # The reset_link should point to your frontend's reset password page.
             # Example: http://localhost:3000/reset-password?token=YOUR_TOKEN
-            reset_link = f"http://localhost:3000/reset-password?token={reset_token}" # Adjust this URL to your frontend's reset page
+            reset_link = f"legendary-bienenstitch-5a15f9.netlify.app/reset-password?token={reset_token}" # Adjust this URL to your frontend's reset page
 
             try:
                 msg = Message("Password Reset Request for CineClub",

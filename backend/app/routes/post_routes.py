@@ -60,7 +60,7 @@ def options_post(post_id):
     Handles CORS preflight requests for the /posts/<int:post_id> route.
     """
     response = make_response()
-    response.headers.add("Access-Control-Allow-Origin", "http://localhost:3000")
+    response.headers.add("Access-Control-Allow-Origin", "legendary-bienenstitch-5a15f9.netlify.app")
     response.headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization")
     response.headers.add("Access-Control-Allow-Methods", "DELETE")
     response.headers.add("Access-Control-Allow-Credentials", "true")

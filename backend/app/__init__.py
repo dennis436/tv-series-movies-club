@@ -23,12 +23,11 @@ mail = Mail() # NEW: Initialize Flask-Mail
 
 def create_app():
     # Create and configure the Flask application
+    from .config import Config
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config["JWT_SECRET_KEY"] = os.getenv('JWT_SECRET_KEY')
-    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
-    app.config['JWT_TOKEN_LOCATION'] = ['headers']
+    app.config.from_object(Config)
+
+    
 
     # NEW: Flask-Mail Configuration
     app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
@@ -40,7 +39,7 @@ def create_app():
     app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER') # The email address emails will be sent from
 
     # Initialize CORS directly with the app instance here
-    CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
+    CORS(app, resources={r"/*": {"origins": "legendary-bienenstitch-5a15f9.netlify.app"}}, supports_credentials=True)
 
     # Initialize other extensions with the app
     db.init_app(app)
