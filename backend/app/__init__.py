@@ -7,7 +7,6 @@ from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from dotenv import load_dotenv
 from flask_cors import CORS
-from datetime import timedelta
 import traceback
 from flask_mail import Mail # NEW: Import Flask-Mail
 
@@ -26,7 +25,7 @@ def create_app():
     from .config import Config
     app = Flask(__name__)
     app.config.from_object(Config)
-
+    CORS(app, resources={r"/*": {"origins": ["https://legendary-bienenstitch-5a15f9.netlify.app"]}}, supports_credentials=True) 
     
 
     # NEW: Flask-Mail Configuration
